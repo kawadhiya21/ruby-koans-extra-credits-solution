@@ -128,35 +128,39 @@ class DiceSet
     counts = Hash.new {0}
     @rolls.each { |chr| counts[chr] += 1 }
     current_roll_total = 0
-    total_dices_left = 0
+    total_dices_rolled = 0
     counts.each do |num, count|
       # 1, 1, 1 = 1000
       if num == 1 and count >= 3
-        total_dices_left += 3
+        total_dices_rolled += 3
         current_roll_total += 1000
         count -= 3
       end
       # 1 = 100
       if num == 1 and count > 0
-        total_dices_left += count
+        total_dices_rolled += count
         current_roll_total += 100 * count
         count = 0
       end
       # count of any number > 3, then x*100
       if count >= 3
-        total_dices_left += 3
+        total_dices_rolled += 3
         current_roll_total += num*100
         count -= 3
       end
       # 5 = 50
       if num == 5 and count > 0
-        total_dices_left += count
+        total_dices_rolled += count
         current_roll_total += 50 * count
         count = 0
       end
     end
 
-    @num = total_dices_left
+    if total_dices_rolled == @num
+      @num = 5
+    else
+      @num -= total_dices_rolled
+    end 
     # if the sum for particular roll = 0, make the complete turn sum = 0
     # and nullify the number of dices left
     if current_roll_total == 0
@@ -175,3 +179,4 @@ else
   game = Game.new(count_players.to_i)
   game.start_game
 end
+
